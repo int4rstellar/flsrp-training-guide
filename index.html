@@ -551,7 +551,7 @@
         <label class="check-item"><input type="checkbox"> Update trainee roles in Discord</label>
       </div>
 
-      <button type="button" id="end-session-btn" class="btn-small" style="margin-top: 10px; padding: 10px 20px;">Finish & Return to Main Menu</button>
+      <button type="button" id="end-session-btn" class="btn-primary" style="margin-top: 16px; max-width: 100%;">Finish Session & Log Results</button>
     </div>
   </div>
 
@@ -612,6 +612,7 @@
   // State
   let currentInstructor = { username: 'Instructor', rank: 'Staff' };
   let selectedTrainees = [];
+  let activeSessionType = '';
   const MAX_TRAINEES = 4;
 
   // Populate Training Types Dropdown
@@ -713,9 +714,99 @@
     showView(menuView);
   };
 
-  document.getElementById('end-session-btn').onclick = () => {
-    document.querySelectorAll('#guide-view input[type="checkbox"]').forEach((cb) => (cb.checked = false));
-    showView(menuView);
+  document.getElementById('end-session-btn').onclick = async () => {
+    const endBtn = document.getElementById('end-session-btn');
+    endBtn.disabled = true;
+    endBtn.textContent = 'Logging results...';
+
+    // Collect checklist results from the guide
+    const checklistItems = [];
+    document.querySelectorAll('#guide-view .check-item').forEach((label) => {
+      const cb = label.querySelector('input[type="checkbox"]');
+      const text = label.textContent.trim();
+      checklistItems.push({ text, checked: !!(cb && cb.checked) });
+    });
+
+    const completedCount = checklistItems.filter((i) => i.checked).length;
+    const totalCount = checklistItems.length;
+    const allComplete = completedCount === totalCount && totalCount > 0;
+    const checklistValue =
+      checklistItems.length === 0
+        ? '_No checklist items_'
+        : checklistItems
+            .map((i) => `${i.checked ? '✅' : '❌'} ${i.text}`)
+            .join('\n');
+
+    const payload = {
+      username: 'FSRP Staff Training Logs',
+      avatar_url: 'https://i.postimg.cc/fLDqFCgj/933343108c74cc3d661798cd4ebca0d9.png',
+      embeds: [
+        {
+          title: allComplete
+            ? '✅ Staff Training Session Completed'
+            : '📋 Staff Training Session Finished',
+          color: allComplete ? 5763719 : 16753920, // green if fully done, orange otherwise
+          fields: [
+            {
+              name: 'Training Instructor',
+              value: `**${currentInstructor.rank}** — \`${currentInstructor.username}\``,
+              inline: true
+            },
+            {
+              name: 'Training Type',
+              value: activeSessionType || '—',
+              inline: true
+            },
+            {
+              name: 'Completion',
+              value: `**${completedCount} / ${totalCount}** checklist items marked complete`,
+              inline: true
+            },
+            {
+              name: `Trainees (${selectedTrainees.length})`,
+              value:
+                selectedTrainees.length > 0
+                  ? selectedTrainees.map((t, i) => `${i + 1}. \`${t}\``).join('\n')
+                  : '_None_',
+              inline: false
+            },
+            {
+              name: 'Checklist Results',
+              value: checklistValue,
+              inline: false
+            }
+          ],
+          footer: {
+            text: 'Florida State Roleplay • Staff Training Portal'
+          },
+          timestamp: new Date().toISOString()
+        }
+      ]
+    };
+
+    try {
+      const webhookRes = await fetch(WEBHOOK_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+
+      if (!webhookRes.ok) {
+        throw new Error(`Webhook returned status ${webhookRes.status}`);
+      }
+    } catch (err) {
+      console.error(err);
+      // Still return to menu even if the log fails so the instructor isn't stuck
+      alert('Session ended, but the results log failed to send. Check the browser console.');
+    } finally {
+      document.querySelectorAll('#guide-view input[type="checkbox"]').forEach((cb) => {
+        cb.checked = false;
+      });
+      activeSessionType = '';
+      endBtn.disabled = false;
+      endBtn.textContent = 'Finish Session & Log Results';
+      showView(menuView);
+    }
   };
 
   // Start Session & Send Discord Webhook
@@ -778,6 +869,8 @@
       if (!webhookRes.ok) {
         throw new Error(`Webhook returned status ${webhookRes.status}`);
       }
+
+      activeSessionType = selectedType;
 
       // Populate active session header and open the guide
       activeSessionInfo.innerHTML = `
