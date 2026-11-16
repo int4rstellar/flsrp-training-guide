@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Florida State RP - Portal</title>
+  <style>
+    body { font-family: sans-serif; background: #121212; color: white; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+    .card { background: #1e1e1e; padding: 2rem; border-radius: 10px; text-align: center; max-width: 400px; }
+    button { background: #5865F2; color: white; border: none; padding: 12px 24px; border-radius: 6px; font-size: 16px; cursor: pointer; }
+    button:hover { background: #4752C4; }
+    #protected-content { display: none; margin-top: 20px; text-align: left; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Florida State RP</h1>
+    <p id="status">Please log in with Discord to verify your role.</p>
+    <button id="login-btn">Login with Discord</button>
+
+    <!-- Only people with the Discord role will see what is inside this box -->
+    <div id="protected-content">
+      <h2>Welcome, Member!</h2>
+      <p>Put your private RP rules, server IP, or links right here.</p>
+    </div>
+  </div>
+
+  <script type="module">
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
+
+    // REPLACE THESE 4 VALUES WITH YOUR OWN:
+    const SUPABASE_URL = 'https://nyrfvlyapwazukltdlsf.supabase.co/';
+    const SUPABASE_ANON_KEY = 'sb_publishable_cVOlR7exe7ZuoaLKr0aOKA_a6Vv1dU7';
+    const GUILD_ID = '1428115068297412742';
+    const ALLOWED_ROLE_ID = '1428115068389949549';
+
+    const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    const statusText = document.getElementById('status');
+    const loginBtn = document.getElementById('login-btn');
+    const protectedBox = document.getElementById('protected-content');
+
+    loginBtn.onclick = async () => {
+      await supabase.auth.signInWithOAuth({
+        provider: 'discord',
+        options: {
+          scopes: 'guilds.members.read',
+          redirectTo: window.location.origin + window.location.pathname
+        }
+      });
+    };
+
+    const { data: { session } } = await supabase.auth.getSession();
+    if (session?.provider_token) {
+      loginBtn.style.display = 'none';
+      statusText.innerText = 'Checking your Discord roles...';
+
+      const res = await fetch(`https://discord.com/api/users/@me/guilds/${GUILD_ID}/member`, {
+        headers: { Authorization: `Bearer ${session.provider_token}` }
+      });
+
+      if (res.ok) {
+        const member = await res.json();
+        if (member.roles.includes(ALLOWED_ROLE_ID)) {
+          statusText.innerText = 'Verified!';
+          protectedBox.style.display = 'block';
+        } else {
+          statusText.innerText = 'Access Denied: You do not have the required role.';
+        }
+      } else {
+        statusText.innerText = 'Access Denied: You are not in the Discord server.';
+      }
+    }
+  </script>
+</body>
+</html>
