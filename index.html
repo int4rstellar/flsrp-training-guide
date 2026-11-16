@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Staff Training Guide 〣 Florida State Roleplay</title>
+  <title>Staff Training Portal 〣 Florida State Roleplay</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -21,7 +21,7 @@
       position: relative;
     }
 
-    /* Ambient Blue Background Glows matching #0082ff */
+    /* Ambient Blue Background Glows */
     .bg-glow {
       position: fixed;
       width: 500px;
@@ -52,11 +52,11 @@
     .card {
       position: relative;
       z-index: 1;
-      background: rgba(10, 15, 30, 0.8);
+      background: rgba(10, 15, 30, 0.85);
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
       border: 1px solid rgba(0, 130, 255, 0.25);
-      padding: 40px 36px;
+      padding: 36px 32px;
       border-radius: 20px;
       width: 100%;
       max-width: 720px;
@@ -84,8 +84,7 @@
       letter-spacing: 0.1em;
     }
 
-    #logout-btn {
-      display: none;
+    .btn-small {
       background: rgba(3, 7, 18, 0.8);
       border: 1px solid rgba(0, 130, 255, 0.25);
       color: #94a3b8;
@@ -98,17 +97,19 @@
       transition: all 0.2s ease;
     }
 
-    #logout-btn:hover {
+    .btn-small:hover {
       border-color: #0082ff;
       color: #ffffff;
-      background: rgba(0, 130, 255, 0.1);
+      background: rgba(0, 130, 255, 0.12);
     }
 
-    /* Server Logo Image Badge */
+    #logout-btn { display: none; }
+
+    /* Server Logo Badge */
     .icon-badge {
       width: 72px;
       height: 72px;
-      margin: 0 auto 20px auto;
+      margin: 0 auto 18px auto;
       border-radius: 50%;
       border: 2px solid rgba(0, 130, 255, 0.5);
       box-shadow: 0 0 25px rgba(0, 130, 255, 0.4);
@@ -151,14 +152,14 @@
       margin-bottom: 24px;
     }
 
-    /* Login Button matching Policy Link aesthetic */
-    #login-btn {
+    /* Primary Action Buttons */
+    .btn-primary {
       display: inline-flex;
       align-items: center;
       justify-content: center;
       gap: 10px;
-      background: rgba(0, 130, 255, 0.15);
-      border: 1px solid rgba(0, 130, 255, 0.5);
+      background: rgba(0, 130, 255, 0.18);
+      border: 1px solid rgba(0, 130, 255, 0.55);
       border-radius: 12px;
       padding: 14px 28px;
       color: #ffffff;
@@ -168,21 +169,28 @@
       cursor: pointer;
       transition: all 0.3s ease;
       box-shadow: 0 4px 20px rgba(0, 130, 255, 0.2);
+      width: 100%;
+      max-width: 340px;
     }
 
-    #login-btn:hover {
+    .btn-primary:hover:not(:disabled) {
       border-color: #0082ff;
-      background: rgba(0, 130, 255, 0.28);
+      background: rgba(0, 130, 255, 0.32);
       transform: translateY(-2px);
-      box-shadow: 0 6px 25px rgba(0, 130, 255, 0.35);
+      box-shadow: 0 6px 25px rgba(0, 130, 255, 0.38);
+    }
+
+    .btn-primary:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
     }
 
     /* Animated Welcome Banner */
     #welcome-banner {
       display: none;
-      font-size: 1.45rem;
+      font-size: 1.4rem;
       font-weight: 800;
-      margin: 8px 0 22px;
+      margin: 6px 0 22px;
       background: linear-gradient(90deg, #ffffff, #0082ff, #93c5fd, #ffffff);
       background-size: 200% auto;
       -webkit-background-clip: text;
@@ -193,28 +201,186 @@
     .cursor {
       display: inline-block;
       width: 3px;
-      height: 1.25rem;
+      height: 1.2rem;
       background-color: #0082ff;
       margin-left: 4px;
       vertical-align: middle;
       animation: blink 0.8s infinite;
     }
 
-    /* Protected Training Guide Container */
-    #protected-content {
+    /* Views */
+    .view-section {
       display: none;
-      text-align: left;
-      margin-top: 10px;
-      opacity: 0;
-      animation: fadeSlideUp 0.8s ease-out 0.25s forwards;
+      animation: fadeSlideUp 0.45s ease-out forwards;
     }
 
-    .guide-intro {
-      color: #94a3b8;
-      font-size: 0.88rem;
-      margin-bottom: 18px;
-      text-align: center;
+    /* Main Menu Box */
+    .menu-box {
+      background: rgba(3, 7, 18, 0.65);
+      border: 1px solid rgba(0, 130, 255, 0.2);
+      border-radius: 14px;
+      padding: 28px 20px;
+      margin-top: 10px;
     }
+
+    .menu-box p {
+      color: #94a3b8;
+      font-size: 0.9rem;
+      margin-bottom: 20px;
+    }
+
+    /* Setup Form Styling */
+    .setup-form {
+      text-align: left;
+      background: rgba(3, 7, 18, 0.75);
+      border: 1px solid rgba(0, 130, 255, 0.22);
+      border-radius: 14px;
+      padding: 24px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-label {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #93c5fd;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .count-badge {
+      background: rgba(0, 130, 255, 0.15);
+      border: 1px solid rgba(0, 130, 255, 0.35);
+      color: #60a5fa;
+      padding: 2px 8px;
+      border-radius: 6px;
+      font-size: 0.75rem;
+    }
+
+    select, input[type="text"] {
+      width: 100%;
+      background: #060b19;
+      border: 1px solid rgba(0, 130, 255, 0.3);
+      border-radius: 10px;
+      padding: 12px 14px;
+      color: #f2f3f5;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.92rem;
+      outline: none;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    select:focus, input[type="text"]:focus {
+      border-color: #0082ff;
+      box-shadow: 0 0 0 3px rgba(0, 130, 255, 0.18);
+    }
+
+    .input-row {
+      display: flex;
+      gap: 10px;
+    }
+
+    .btn-add {
+      background: rgba(0, 130, 255, 0.2);
+      border: 1px solid rgba(0, 130, 255, 0.5);
+      color: #ffffff;
+      font-family: 'Inter', sans-serif;
+      font-weight: 600;
+      font-size: 0.9rem;
+      padding: 0 20px;
+      border-radius: 10px;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.2s ease;
+    }
+
+    .btn-add:hover:not(:disabled) {
+      background: rgba(0, 130, 255, 0.35);
+      border-color: #0082ff;
+    }
+
+    .btn-add:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+
+    /* Selected Trainees Pills */
+    .selected-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+      min-height: 10px;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(0, 130, 255, 0.2);
+      border: 1px solid rgba(0, 130, 255, 0.5);
+      color: #ffffff;
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    .pill button {
+      background: none;
+      border: none;
+      color: #93c5fd;
+      font-size: 1.05rem;
+      font-weight: 700;
+      cursor: pointer;
+      line-height: 1;
+      padding: 0;
+    }
+
+    .pill button:hover {
+      color: #ff6b6b;
+    }
+
+    .form-actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 22px;
+    }
+
+    .form-actions .btn-primary {
+      max-width: none;
+      flex: 1;
+    }
+
+    .error-msg {
+      color: #ff6b6b;
+      font-size: 0.84rem;
+      margin-top: 8px;
+      display: none;
+    }
+
+    /* Active Session Guide Styling */
+    .session-header {
+      background: rgba(0, 130, 255, 0.1);
+      border: 1px solid rgba(0, 130, 255, 0.3);
+      border-radius: 12px;
+      padding: 14px 18px;
+      margin-bottom: 18px;
+      text-align: left;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 10px;
+      font-size: 0.86rem;
+    }
+
+    .session-header strong { color: #60a5fa; }
 
     .module {
       background: rgba(3, 7, 18, 0.8);
@@ -223,12 +389,8 @@
       border-radius: 12px;
       padding: 18px 20px;
       margin-bottom: 14px;
+      text-align: left;
       box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.4);
-      transition: border-color 0.3s ease;
-    }
-
-    .module:hover {
-      border-color: rgba(0, 130, 255, 0.45);
     }
 
     .module h3 {
@@ -267,7 +429,6 @@
       cursor: pointer;
     }
 
-    /* Keyframe Animations */
     @keyframes scaleUp {
       from { opacity: 0; transform: scale(0.92); }
       to { opacity: 1; transform: scale(1); }
@@ -301,7 +462,7 @@
   <div class="card">
     <div class="top-bar">
       <span class="badge-restricted">Staff Instructors Only</span>
-      <button id="logout-btn">Log Out</button>
+      <button id="logout-btn" class="btn-small">Log Out</button>
     </div>
 
     <div class="icon-badge">
@@ -309,17 +470,59 @@
     </div>
 
     <div class="brand-sub">Florida State Roleplay</div>
-    <h1>Staff Training Guide</h1>
+    <h1>Staff Training Portal</h1>
     <p class="subtitle" id="status">Restricted Area. Please log in with Discord to verify your Staff Instructor credentials.</p>
 
-    <button id="login-btn">Login with Discord</button>
+    <button id="login-btn" class="btn-primary">Login with Discord</button>
 
-    <!-- Animated Welcome Heading -->
+    <!-- Animated Welcome Banner -->
     <div id="welcome-banner"><span id="welcome-text"></span><span class="cursor"></span></div>
 
-    <!-- INSTRUCTOR TRAINING SCRIPT (ONLY VISIBLE TO AUTHORIZED ROLES) -->
-    <div id="protected-content">
-      <p class="guide-intro">Read through each module below with the trainee and check off topics as you complete them.</p>
+    <!-- VIEW 1: MAIN MENU -->
+    <div id="menu-view" class="view-section">
+      <div class="menu-box">
+        <p>Select an action below to begin a new staff training session and log it to Discord.</p>
+        <button id="open-setup-btn" class="btn-primary">Start New Training Session</button>
+      </div>
+    </div>
+
+    <!-- VIEW 2: SESSION SETUP (SELECT TRAINING TYPE & TYPE UP TO 4 TRAINEES) -->
+    <div id="setup-view" class="view-section">
+      <div class="setup-form">
+        <div class="form-group">
+          <label class="form-label" for="training-type-select">1. Select Training Type</label>
+          <select id="training-type-select">
+            <!-- Populated from TRAINING_TYPES in the script below -->
+          </select>
+        </div>
+
+        <div class="form-group">
+          <div class="form-label">
+            <span>2. Enter Trainee Discord Usernames</span>
+            <span class="count-badge" id="trainee-count">0 / 4 Added</span>
+          </div>
+
+          <div class="input-row">
+            <input type="text" id="trainee-input" placeholder="Type Discord username and press Enter..." autocomplete="off">
+            <button type="button" id="add-trainee-btn" class="btn-add">+ Add</button>
+          </div>
+
+          <!-- Added Trainees Pills -->
+          <div class="selected-pills" id="selected-pills"></div>
+
+          <p class="error-msg" id="setup-error"></p>
+        </div>
+
+        <div class="form-actions">
+          <button type="button" id="cancel-setup-btn" class="btn-small" style="padding: 14px 20px;">Back</button>
+          <button type="button" id="confirm-start-btn" class="btn-primary">Start New Session</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- VIEW 3: ACTIVE TRAINING GUIDE SCRIPT -->
+    <div id="guide-view" class="view-section">
+      <div class="session-header" id="active-session-info"></div>
 
       <div class="module">
         <h3>Module 1: Introduction & Expectations</h3>
@@ -347,17 +550,29 @@
         <label class="check-item"><input type="checkbox"> Answer trainee questions</label>
         <label class="check-item"><input type="checkbox"> Update trainee roles in Discord</label>
       </div>
+
+      <button type="button" id="end-session-btn" class="btn-small" style="margin-top: 10px; padding: 10px 20px;">Finish & Return to Main Menu</button>
     </div>
   </div>
 
   <script type="module">
     import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
 
+    // ==========================================
+    // 1. CONFIGURATION (EDIT THESE LISTS ANYTIME)
+    // ==========================================
     const SUPABASE_URL = 'https://nyrfvlyapwazukltdlsf.supabase.co';
     const SUPABASE_ANON_KEY = 'sb_publishable_cVOlR7exe7ZuoaLKr0aOKA_a6Vv1dU7';
     const GUILD_ID = '1428115068297412742';
+    const WEBHOOK_URL = 'https://webhook.lewisakura.moe/api/webhooks/1572011826961457252/DiBuXlT3-CMoIP34Cy3mtpH3I5JownrR-VHszdMBqqhNHtMXslmwvpn63WjK6M_uXDCN';
 
-    // Ordered from highest rank to lowest rank
+    // Add or edit your Training Types here:
+    const TRAINING_TYPES = [
+      'Entry Moderator Training',
+      'Support Training'
+    ];
+
+    // Ordered from highest rank to lowest rank:
     const RANK_ROLES = [
       { id: '1566965345904894042', name: 'Server Lead' },
       { id: '1428115068494807345', name: 'Owner' },
@@ -369,28 +584,219 @@
       { id: '1428115068460994740', name: 'Trial Executive' }
     ];
 
+    // ==========================================
+    // 2. APP LOGIC
+    // ==========================================
     const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    // Elements
     const statusText = document.getElementById('status');
     const loginBtn = document.getElementById('login-btn');
     const logoutBtn = document.getElementById('logout-btn');
     const welcomeBanner = document.getElementById('welcome-banner');
     const welcomeText = document.getElementById('welcome-text');
-    const protectedBox = document.getElementById('protected-content');
 
-    // Typewriter animation helper
+    const menuView = document.getElementById('menu-view');
+    const setupView = document.getElementById('setup-view');
+    const guideView = document.getElementById('guide-view');
+
+    const trainingSelect = document.getElementById('training-type-select');
+    const traineeInput = document.getElementById('trainee-input');
+    const addTraineeBtn = document.getElementById('add-trainee-btn');
+    const selectedPills = document.getElementById('selected-pills');
+    const traineeCountBadge = document.getElementById('trainee-count');
+    const setupError = document.getElementById('setup-error');
+    const confirmStartBtn = document.getElementById('confirm-start-btn');
+    const activeSessionInfo = document.getElementById('active-session-info');
+
+    // State
+    let currentInstructor = { username: 'Instructor', rank: 'Staff' };
+    let selectedTrainees = [];
+    const MAX_TRAINEES = 4;
+
+    // Populate Training Types Dropdown
+    TRAINING_TYPES.forEach((type) => {
+      const opt = document.createElement('option');
+      opt.value = type;
+      opt.textContent = type;
+      trainingSelect.appendChild(opt);
+    });
+
+    // Helper: Switch visible screen
+    function showView(viewElement) {
+      menuView.style.display = 'none';
+      setupView.style.display = 'none';
+      guideView.style.display = 'none';
+      viewElement.style.display = 'block';
+    }
+
+    // Typewriter welcome animation
     function typeWelcomeMessage(fullMessage) {
       welcomeBanner.style.display = 'block';
+      welcomeText.textContent = '';
       let index = 0;
       const timer = setInterval(() => {
         welcomeText.textContent += fullMessage.charAt(index);
         index++;
-        if (index >= fullMessage.length) {
-          clearInterval(timer);
-        }
+        if (index >= fullMessage.length) clearInterval(timer);
       }, 45);
     }
 
-    // Login
+    // Render Selected Trainee Pills
+    function renderTraineePills() {
+      traineeCountBadge.textContent = `${selectedTrainees.length} / ${MAX_TRAINEES} Added`;
+      addTraineeBtn.disabled = selectedTrainees.length >= MAX_TRAINEES;
+      traineeInput.disabled = selectedTrainees.length >= MAX_TRAINEES;
+      traineeInput.placeholder =
+        selectedTrainees.length >= MAX_TRAINEES
+          ? 'Maximum of 4 trainees reached'
+          : 'Type Discord username and press Enter...';
+
+      selectedPills.innerHTML = '';
+
+      selectedTrainees.forEach((name) => {
+        const pill = document.createElement('span');
+        pill.className = 'pill';
+        pill.innerHTML = `${name} <button type="button" title="Remove">&times;</button>`;
+        pill.querySelector('button').onclick = () => {
+          selectedTrainees = selectedTrainees.filter((t) => t !== name);
+          setupError.style.display = 'none';
+          renderTraineePills();
+        };
+        selectedPills.appendChild(pill);
+      });
+    }
+
+    // Add a typed trainee username
+    function handleAddTrainee() {
+      setupError.style.display = 'none';
+      const rawName = traineeInput.value.trim().replace(/^@/, '');
+
+      if (!rawName) return;
+
+      if (selectedTrainees.length >= MAX_TRAINEES) {
+        setupError.textContent = `You can only add up to ${MAX_TRAINEES} trainees per session.`;
+        setupError.style.display = 'block';
+        return;
+      }
+
+      if (selectedTrainees.some((t) => t.toLowerCase() === rawName.toLowerCase())) {
+        setupError.textContent = `"${rawName}" is already added to this session.`;
+        setupError.style.display = 'block';
+        return;
+      }
+
+      selectedTrainees.push(rawName);
+      traineeInput.value = '';
+      renderTraineePills();
+    }
+
+    addTraineeBtn.onclick = handleAddTrainee;
+
+    traineeInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        handleAddTrainee();
+      }
+    });
+
+    // Navigation Button Listeners
+    document.getElementById('open-setup-btn').onclick = () => {
+      selectedTrainees = [];
+      traineeInput.value = '';
+      setupError.style.display = 'none';
+      renderTraineePills();
+      showView(setupView);
+    };
+
+    document.getElementById('cancel-setup-btn').onclick = () => {
+      showView(menuView);
+    };
+
+    document.getElementById('end-session-btn').onclick = () => {
+      document.querySelectorAll('#guide-view input[type="checkbox"]').forEach((cb) => (cb.checked = false));
+      showView(menuView);
+    };
+
+    // Start Session & Send Discord Webhook
+    confirmStartBtn.onclick = async () => {
+      // Auto-add whatever is currently typed in the box if they forgot to click "+ Add"
+      if (traineeInput.value.trim() && selectedTrainees.length < MAX_TRAINEES) {
+        handleAddTrainee();
+      }
+
+      if (selectedTrainees.length === 0) {
+        setupError.textContent = 'Please enter at least 1 trainee username before starting.';
+        setupError.style.display = 'block';
+        return;
+      }
+
+      const selectedType = trainingSelect.value;
+      confirmStartBtn.disabled = true;
+      confirmStartBtn.textContent = 'Starting & Logging Session...';
+      setupError.style.display = 'none';
+
+      const payload = {
+        username: 'FSRP Staff Training Logs',
+        avatar_url: 'https://i.postimg.cc/fLDqFCgj/933343108c74cc3d661798cd4ebca0d9.png',
+        embeds: [
+          {
+            title: '📋 New Staff Training Session Started',
+            color: 33535, // #0082ff
+            fields: [
+              {
+                name: 'Training Instructor',
+                value: `**${currentInstructor.rank}** — \`${currentInstructor.username}\``,
+                inline: true
+              },
+              {
+                name: 'Training Type',
+                value: selectedType,
+                inline: true
+              },
+              {
+                name: `Trainees (${selectedTrainees.length}/${MAX_TRAINEES})`,
+                value: selectedTrainees.map((t, i) => `${i + 1}. \`${t}\``).join('\n'),
+                inline: false
+              }
+            ],
+            footer: {
+              text: 'Florida State Roleplay • Staff Training Portal'
+            },
+            timestamp: new Date().toISOString()
+          }
+        ]
+      };
+
+      try {
+        const webhookRes = await fetch(WEBHOOK_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+
+        if (!webhookRes.ok) {
+          throw new Error(`Webhook returned status ${webhookRes.status}`);
+        }
+
+        // Populate active session header and open the guide
+        activeSessionInfo.innerHTML = `
+          <div><strong>Training:</strong> ${selectedType}</div>
+          <div><strong>Instructor:</strong> ${currentInstructor.rank} ${currentInstructor.username}</div>
+          <div style="width:100%;"><strong>Trainees:</strong> ${selectedTrainees.join(', ')}</div>
+        `;
+
+        showView(guideView);
+      } catch (err) {
+        setupError.textContent = 'Failed to send session log to webhook. Please try again.';
+        setupError.style.display = 'block';
+      } finally {
+        confirmStartBtn.disabled = false;
+        confirmStartBtn.textContent = 'Start New Session';
+      }
+    };
+
+    // Auth Login & Logout
     loginBtn.onclick = async () => {
       await supabase.auth.signInWithOAuth({
         provider: 'discord',
@@ -401,14 +807,13 @@
       });
     };
 
-    // Log Out
     logoutBtn.onclick = async () => {
       await supabase.auth.signOut();
       localStorage.clear();
       window.location.href = window.location.origin + window.location.pathname;
     };
 
-    // Verify Session & Roles
+    // Verify Discord Session & Roles on Load
     const { data: { session } } = await supabase.auth.getSession();
 
     if (session) {
@@ -433,14 +838,17 @@
           const matchedRank = RANK_ROLES.find((rank) => member.roles.includes(rank.id));
 
           if (matchedRank) {
-            // Strictly grabs their Discord username (not server nickname or display name)
             const discordUsername = member.user?.username || 'Instructor';
+            currentInstructor = {
+              username: discordUsername,
+              rank: matchedRank.name
+            };
 
             statusText.style.display = 'none';
-            protectedBox.style.display = 'block';
             typeWelcomeMessage(`Welcome, ${matchedRank.name} ${discordUsername}`);
+            showView(menuView);
           } else {
-            statusText.innerText = 'Access Denied: This training guide is restricted to Staff Instructors only.';
+            statusText.innerText = 'Access Denied: This training portal is restricted to Staff Instructors only.';
           }
         } else {
           statusText.innerText = 'Access Denied: You must be in the Florida State Roleplay Discord server.';
