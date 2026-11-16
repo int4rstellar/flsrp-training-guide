@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Florida State RP - Guide</title>
+  <title>Florida State RP - Staff Training Guide</title>
   <style>
     body {
       font-family: system-ui, -apple-system, sans-serif;
@@ -22,7 +22,7 @@
       padding: 2rem;
       border-radius: 12px;
       text-align: center;
-      max-width: 600px;
+      max-width: 750px;
       width: 100%;
       box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
     }
@@ -30,7 +30,18 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 1rem;
+      margin-bottom: 0.5rem;
+    }
+    .badge-restricted {
+      background: #3a1c1c;
+      color: #ff6b6b;
+      border: 1px solid #ff6b6b44;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 999px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
     }
     button {
       background: #5865F2;
@@ -54,50 +65,183 @@
     #logout-btn:hover {
       background: #424242;
     }
+
+    /* Animated Welcome Banner */
+    #welcome-banner {
+      display: none;
+      font-size: 1.75rem;
+      font-weight: 800;
+      margin: 10px 0 20px;
+      background: linear-gradient(90deg, #ffffff, #7289da, #ffffff);
+      background-size: 200% auto;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: fadeSlideUp 0.7s ease-out forwards, shimmer 3s linear infinite;
+    }
+
+    .cursor {
+      display: inline-block;
+      width: 3px;
+      height: 1.4rem;
+      background-color: #7289da;
+      margin-left: 4px;
+      vertical-align: middle;
+      animation: blink 0.8s infinite;
+    }
+
+    @keyframes fadeSlideUp {
+      0% { opacity: 0; transform: translateY(15px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes shimmer {
+      0% { background-position: 0% center; }
+      100% { background-position: 200% center; }
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+
+    /* Instructor Script / Training Guide Box */
     #protected-content {
       display: none;
-      margin-top: 20px;
+      margin-top: 15px;
       text-align: left;
       background: #262626;
-      padding: 20px;
+      padding: 24px;
       border-radius: 8px;
-      line-height: 1.6;
+      line-height: 1.65;
+      opacity: 0;
+      animation: fadeSlideUp 0.8s ease-out 0.3s forwards;
+    }
+    .module {
+      background: #1c1c1c;
+      border-left: 4px solid #5865F2;
+      padding: 15px 18px;
+      border-radius: 6px;
+      margin-bottom: 16px;
+    }
+    .module h3 {
+      margin-top: 0;
+      margin-bottom: 8px;
+      color: #99aab5;
+      font-size: 1.1rem;
+    }
+    .script-quote {
+      background: #141414;
+      border: 1px solid #333;
+      padding: 12px 14px;
+      border-radius: 6px;
+      font-style: italic;
+      color: #e0e0e0;
+      margin: 10px 0;
+    }
+    .check-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 8px 0;
+      cursor: pointer;
+    }
+    .check-item input[type="checkbox"] {
+      width: 17px;
+      height: 17px;
+      accent-color: #5865F2;
+      cursor: pointer;
     }
   </style>
 </head>
 <body>
   <div class="card">
     <div class="top-bar">
-      <span id="user-badge" style="font-size: 14px; color: #aaa;"></span>
+      <span class="badge-restricted">Staff Instructors Only</span>
       <button id="logout-btn">Log Out</button>
     </div>
 
-    <h1>Florida State RP</h1>
-    <p id="status">Please log in with Discord to access the guide.</p>
+    <h1>Florida State RP — Staff Training</h1>
+    <p id="status">Restricted Area. Please log in with Discord to verify your Instructor / Staff rank.</p>
     <button id="login-btn">Login with Discord</button>
 
-    <!-- PUT YOUR PRIVATE GUIDE CONTENT INSIDE THIS DIV -->
+    <!-- Animated Welcome Heading -->
+    <div id="welcome-banner"><span id="welcome-text"></span><span class="cursor"></span></div>
+
+    <!-- INSTRUCTOR TRAINING SCRIPT (ONLY VISIBLE TO AUTHORIZED ROLES) -->
     <div id="protected-content">
-      <h2>Welcome to the Florida State RP Guide</h2>
-      <p>Put your rules, SOPs, server links, or embedded guides right here.</p>
+      <h2>Instructor Training Script</h2>
+      <p style="color: #aaa; font-size: 14px;">Read through each module below with the trainee and check off topics as you complete them.</p>
+
+      <div class="module">
+        <h3>Module 1: Introduction & Expectations</h3>
+        <div class="script-quote">
+          "Welcome to the Florida State RP Staff Team. Today we are going to walk through our core rules, moderation commands, and how to handle player reports professionally."
+        </div>
+        <label class="check-item"><input type="checkbox"> Verify trainee has read the Staff Handbook</label>
+        <label class="check-item"><input type="checkbox"> Confirm trainee has working microphone & recording software</label>
+      </div>
+
+      <div class="module">
+        <h3>Module 2: Handling Reports & Sit Etiquette</h3>
+        <div class="script-quote">
+          "Always teleport to a private rooftop or sit area before pulling players. Listen to both sides without interrupting and ask for video clips before issuing punishments."
+        </div>
+        <label class="check-item"><input type="checkbox"> Explain verbal warnings vs. kicks vs. bans</label>
+        <label class="check-item"><input type="checkbox"> Review how to log punishments in Discord</label>
+      </div>
+
+      <div class="module">
+        <h3>Module 3: Final Q&A & Sign-Off</h3>
+        <div class="script-quote">
+          "Do you have any questions about commands, SOPs, or escalation procedures before we finish your training?"
+        </div>
+        <label class="check-item"><input type="checkbox"> Answer trainee questions</label>
+        <label class="check-item"><input type="checkbox"> Update trainee roles in Discord</label>
+      </div>
     </div>
   </div>
 
   <script type="module">
     import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
 
-    // 1. REPLACE THESE 4 VALUES WITH YOUR OWN:
+    // 1. FILL IN YOUR DETAILS HERE:
     const SUPABASE_URL = 'https://nyrfvlyapwazukltdlsf.supabase.co';
     const SUPABASE_ANON_KEY = 'sb_publishable_cVOlR7exe7ZuoaLKr0aOKA_a6Vv1dU7';
     const GUILD_ID = '1428115068297412742';
-    const ALLOWED_ROLE_ID = '1428115068389949549';
+
+    // 2. ONLY PUT STAFF INSTRUCTOR / LEADERSHIP ROLE IDS HERE (NO COMMUNITY MEMBERS):
+    // Ordered from highest rank to lowest rank.
+    const RANK_ROLES = [
+      { id: '1566965345904894042', name: 'Server Lead' },
+      { id: '1428115068494807345', name: 'Owner' },
+      { id: '1428115068494807344', name: 'Co Owner' },
+      { id: '1428115068494807343', name: 'Assistant Owner' },
+      { id: '1428115068477902969', name: 'Executive Director' },
+      { id: '1428115068477902968', name: 'Staff Executive' },
+      { id: '1428115068460994741', name: 'Community Executive' },
+      { id: '1428115068460994740', name: 'Trial Executive' },
+    ];
 
     const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
     const statusText = document.getElementById('status');
-    const userBadge = document.getElementById('user-badge');
     const loginBtn = document.getElementById('login-btn');
     const logoutBtn = document.getElementById('logout-btn');
+    const welcomeBanner = document.getElementById('welcome-banner');
+    const welcomeText = document.getElementById('welcome-text');
     const protectedBox = document.getElementById('protected-content');
+
+    // Typewriter animation helper
+    function typeWelcomeMessage(fullMessage) {
+      welcomeBanner.style.display = 'block';
+      let index = 0;
+      const timer = setInterval(() => {
+        welcomeText.textContent += fullMessage.charAt(index);
+        index++;
+        if (index >= fullMessage.length) {
+          clearInterval(timer);
+        }
+      }, 45);
+    }
 
     // Login
     loginBtn.onclick = async () => {
@@ -125,14 +269,13 @@
       logoutBtn.style.display = 'inline-block';
 
       if (!session.provider_token) {
-        // Token expired — force a fresh login
         await supabase.auth.signOut();
         localStorage.clear();
         loginBtn.style.display = 'inline-block';
         logoutBtn.style.display = 'none';
         statusText.innerText = 'Your session expired. Please log in with Discord again.';
       } else {
-        statusText.innerText = 'Verifying your Discord roles...';
+        statusText.innerText = 'Verifying your Instructor credentials...';
 
         const res = await fetch(`https://discord.com/api/users/@me/guilds/${GUILD_ID}/member`, {
           headers: { Authorization: `Bearer ${session.provider_token}` }
@@ -140,14 +283,16 @@
 
         if (res.ok) {
           const member = await res.json();
-          const hasAccess = member.roles.some((roleId) => ALLOWED_ROLE_IDS.includes(roleId));
+          const matchedRank = RANK_ROLES.find((rank) => member.roles.includes(rank.id));
 
-          if (hasAccess) {
-            userBadge.innerText = `Logged in as ${member.user?.username || 'Member'}`;
+          if (matchedRank) {
+            const displayName = member.nick || member.user?.global_name || member.user?.username || 'Instructor';
+
             statusText.style.display = 'none';
             protectedBox.style.display = 'block';
+            typeWelcomeMessage(`Welcome, ${matchedRank.name} ${displayName}`);
           } else {
-            statusText.innerText = 'Access Denied: You do not have any of the required Discord roles.';
+            statusText.innerText = 'Access Denied: This training guide is restricted to Staff Instructors only.';
           }
         } else {
           statusText.innerText = 'Access Denied: You must be in the Florida State RP Discord server.';
