@@ -3,76 +3,187 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Florida State RP - Staff Training Guide</title>
+  <title>Staff Training Guide 〣 Florida State Roleplay</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
     body {
-      font-family: system-ui, -apple-system, sans-serif;
-      background: #121212;
-      color: #ffffff;
-      display: flex;
-      justify-content: center;
-      align-items: center;
+      font-family: 'Inter', sans-serif;
+      background: #030611;
+      color: #f2f3f5;
       min-height: 100vh;
-      margin: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       padding: 20px;
-      box-sizing: border-box;
+      overflow-x: hidden;
+      position: relative;
     }
+
+    /* Ambient Blue Background Glows matching #0082ff */
+    .bg-glow {
+      position: fixed;
+      width: 500px;
+      height: 500px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(0, 130, 255, 0.18) 0%, rgba(0,0,0,0) 70%);
+      top: -100px;
+      left: -100px;
+      z-index: 0;
+      pointer-events: none;
+      animation: float 12s ease-in-out infinite alternate;
+    }
+
+    .bg-glow-2 {
+      position: fixed;
+      width: 450px;
+      height: 450px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(0, 130, 255, 0.12) 0%, rgba(0,0,0,0) 70%);
+      bottom: -100px;
+      right: -100px;
+      z-index: 0;
+      pointer-events: none;
+      animation: float 10s ease-in-out infinite alternate-reverse;
+    }
+
+    /* Glassmorphism Card Container */
     .card {
-      background: #1e1e1e;
-      padding: 2rem;
-      border-radius: 12px;
-      text-align: center;
-      max-width: 750px;
+      position: relative;
+      z-index: 1;
+      background: rgba(10, 15, 30, 0.8);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(0, 130, 255, 0.25);
+      padding: 40px 36px;
+      border-radius: 20px;
       width: 100%;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+      max-width: 720px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(0, 130, 255, 0.2);
+      text-align: center;
+      animation: scaleUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
     }
+
     .top-bar {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 0.5rem;
+      margin-bottom: 16px;
     }
+
     .badge-restricted {
-      background: #3a1c1c;
-      color: #ff6b6b;
-      border: 1px solid #ff6b6b44;
-      font-size: 12px;
+      background: rgba(0, 130, 255, 0.12);
+      color: #60a5fa;
+      border: 1px solid rgba(0, 130, 255, 0.35);
+      font-size: 0.72rem;
       font-weight: 700;
-      padding: 4px 10px;
+      padding: 5px 12px;
       border-radius: 999px;
       text-transform: uppercase;
-      letter-spacing: 0.5px;
+      letter-spacing: 0.1em;
     }
-    button {
-      background: #5865F2;
-      color: white;
-      border: none;
-      padding: 12px 24px;
-      border-radius: 6px;
-      font-size: 16px;
-      font-weight: 600;
-      cursor: pointer;
-    }
-    button:hover {
-      background: #4752C4;
-    }
+
     #logout-btn {
-      background: #2f2f2f;
       display: none;
-      font-size: 13px;
-      padding: 6px 12px;
+      background: rgba(3, 7, 18, 0.8);
+      border: 1px solid rgba(0, 130, 255, 0.25);
+      color: #94a3b8;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.8rem;
+      font-weight: 600;
+      padding: 6px 14px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s ease;
     }
+
     #logout-btn:hover {
-      background: #424242;
+      border-color: #0082ff;
+      color: #ffffff;
+      background: rgba(0, 130, 255, 0.1);
+    }
+
+    /* Server Logo Image Badge */
+    .icon-badge {
+      width: 72px;
+      height: 72px;
+      margin: 0 auto 20px auto;
+      border-radius: 50%;
+      border: 2px solid rgba(0, 130, 255, 0.5);
+      box-shadow: 0 0 25px rgba(0, 130, 255, 0.4);
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #000;
+    }
+
+    .icon-badge img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .brand-sub {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: #0082ff;
+      margin-bottom: 6px;
+    }
+
+    h1 {
+      font-size: 1.65rem;
+      font-weight: 800;
+      margin-bottom: 8px;
+      background: linear-gradient(135deg, #ffffff 0%, #93c5fd 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: -0.02em;
+    }
+
+    .subtitle {
+      color: #94a3b8;
+      font-size: 0.92rem;
+      line-height: 1.5;
+      margin-bottom: 24px;
+    }
+
+    /* Login Button matching Policy Link aesthetic */
+    #login-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      background: rgba(0, 130, 255, 0.15);
+      border: 1px solid rgba(0, 130, 255, 0.5);
+      border-radius: 12px;
+      padding: 14px 28px;
+      color: #ffffff;
+      font-family: 'Inter', sans-serif;
+      font-weight: 600;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 20px rgba(0, 130, 255, 0.2);
+    }
+
+    #login-btn:hover {
+      border-color: #0082ff;
+      background: rgba(0, 130, 255, 0.28);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 25px rgba(0, 130, 255, 0.35);
     }
 
     /* Animated Welcome Banner */
     #welcome-banner {
       display: none;
-      font-size: 1.75rem;
+      font-size: 1.45rem;
       font-weight: 800;
-      margin: 10px 0 20px;
-      background: linear-gradient(90deg, #ffffff, #7289da, #ffffff);
+      margin: 8px 0 22px;
+      background: linear-gradient(90deg, #ffffff, #0082ff, #93c5fd, #ffffff);
       background-size: 200% auto;
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
@@ -82,16 +193,89 @@
     .cursor {
       display: inline-block;
       width: 3px;
-      height: 1.4rem;
-      background-color: #7289da;
+      height: 1.25rem;
+      background-color: #0082ff;
       margin-left: 4px;
       vertical-align: middle;
       animation: blink 0.8s infinite;
     }
 
+    /* Protected Training Guide Container */
+    #protected-content {
+      display: none;
+      text-align: left;
+      margin-top: 10px;
+      opacity: 0;
+      animation: fadeSlideUp 0.8s ease-out 0.25s forwards;
+    }
+
+    .guide-intro {
+      color: #94a3b8;
+      font-size: 0.88rem;
+      margin-bottom: 18px;
+      text-align: center;
+    }
+
+    .module {
+      background: rgba(3, 7, 18, 0.8);
+      border: 1px solid rgba(0, 130, 255, 0.2);
+      border-left: 3px solid #0082ff;
+      border-radius: 12px;
+      padding: 18px 20px;
+      margin-bottom: 14px;
+      box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.4);
+      transition: border-color 0.3s ease;
+    }
+
+    .module:hover {
+      border-color: rgba(0, 130, 255, 0.45);
+    }
+
+    .module h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      color: #93c5fd;
+      margin-bottom: 10px;
+    }
+
+    .script-quote {
+      background: rgba(10, 15, 30, 0.9);
+      border: 1px solid rgba(0, 130, 255, 0.15);
+      padding: 12px 14px;
+      border-radius: 8px;
+      font-style: italic;
+      font-size: 0.9rem;
+      color: #e2e8f0;
+      line-height: 1.55;
+      margin-bottom: 12px;
+    }
+
+    .check-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 8px 0;
+      font-size: 0.9rem;
+      color: #cbd5e1;
+      cursor: pointer;
+    }
+
+    .check-item input[type="checkbox"] {
+      width: 16px;
+      height: 16px;
+      accent-color: #0082ff;
+      cursor: pointer;
+    }
+
+    /* Keyframe Animations */
+    @keyframes scaleUp {
+      from { opacity: 0; transform: scale(0.92); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
     @keyframes fadeSlideUp {
-      0% { opacity: 0; transform: translateY(15px); }
-      100% { opacity: 1; transform: translateY(0); }
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     @keyframes shimmer {
@@ -104,64 +288,30 @@
       50% { opacity: 0; }
     }
 
-    /* Instructor Script / Training Guide Box */
-    #protected-content {
-      display: none;
-      margin-top: 15px;
-      text-align: left;
-      background: #262626;
-      padding: 24px;
-      border-radius: 8px;
-      line-height: 1.65;
-      opacity: 0;
-      animation: fadeSlideUp 0.8s ease-out 0.3s forwards;
-    }
-    .module {
-      background: #1c1c1c;
-      border-left: 4px solid #5865F2;
-      padding: 15px 18px;
-      border-radius: 6px;
-      margin-bottom: 16px;
-    }
-    .module h3 {
-      margin-top: 0;
-      margin-bottom: 8px;
-      color: #99aab5;
-      font-size: 1.1rem;
-    }
-    .script-quote {
-      background: #141414;
-      border: 1px solid #333;
-      padding: 12px 14px;
-      border-radius: 6px;
-      font-style: italic;
-      color: #e0e0e0;
-      margin: 10px 0;
-    }
-    .check-item {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin: 8px 0;
-      cursor: pointer;
-    }
-    .check-item input[type="checkbox"] {
-      width: 17px;
-      height: 17px;
-      accent-color: #5865F2;
-      cursor: pointer;
+    @keyframes float {
+      0% { transform: translate(0, 0); }
+      100% { transform: translate(30px, 30px); }
     }
   </style>
 </head>
 <body>
+  <div class="bg-glow"></div>
+  <div class="bg-glow-2"></div>
+
   <div class="card">
     <div class="top-bar">
       <span class="badge-restricted">Staff Instructors Only</span>
       <button id="logout-btn">Log Out</button>
     </div>
 
-    <h1>Florida State RP — Staff Training</h1>
-    <p id="status">Restricted Area. Please log in with Discord to verify your Instructor / Staff rank.</p>
+    <div class="icon-badge">
+      <img src="https://i.postimg.cc/fLDqFCgj/933343108c74cc3d661798cd4ebca0d9.png" alt="Florida State Roleplay Logo">
+    </div>
+
+    <div class="brand-sub">Florida State Roleplay</div>
+    <h1>Staff Training Guide</h1>
+    <p class="subtitle" id="status">Restricted Area. Please log in with Discord to verify your Staff Instructor credentials.</p>
+
     <button id="login-btn">Login with Discord</button>
 
     <!-- Animated Welcome Heading -->
@@ -169,8 +319,7 @@
 
     <!-- INSTRUCTOR TRAINING SCRIPT (ONLY VISIBLE TO AUTHORIZED ROLES) -->
     <div id="protected-content">
-      <h2>Instructor Training Script</h2>
-      <p style="color: #aaa; font-size: 14px;">Read through each module below with the trainee and check off topics as you complete them.</p>
+      <p class="guide-intro">Read through each module below with the trainee and check off topics as you complete them.</p>
 
       <div class="module">
         <h3>Module 1: Introduction & Expectations</h3>
@@ -204,13 +353,11 @@
   <script type="module">
     import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
 
-    // 1. FILL IN YOUR DETAILS HERE:
     const SUPABASE_URL = 'https://nyrfvlyapwazukltdlsf.supabase.co';
     const SUPABASE_ANON_KEY = 'sb_publishable_cVOlR7exe7ZuoaLKr0aOKA_a6Vv1dU7';
     const GUILD_ID = '1428115068297412742';
 
-    // 2. ONLY PUT STAFF INSTRUCTOR / LEADERSHIP ROLE IDS HERE (NO COMMUNITY MEMBERS):
-    // Ordered from highest rank to lowest rank.
+    // Ordered from highest rank to lowest rank
     const RANK_ROLES = [
       { id: '1566965345904894042', name: 'Server Lead' },
       { id: '1428115068494807345', name: 'Owner' },
@@ -219,7 +366,7 @@
       { id: '1428115068477902969', name: 'Executive Director' },
       { id: '1428115068477902968', name: 'Staff Executive' },
       { id: '1428115068460994741', name: 'Community Executive' },
-      { id: '1428115068460994740', name: 'Trial Executive' },
+      { id: '1428115068460994740', name: 'Trial Executive' }
     ];
 
     const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -286,16 +433,17 @@
           const matchedRank = RANK_ROLES.find((rank) => member.roles.includes(rank.id));
 
           if (matchedRank) {
-            const displayName = member.nick || member.user?.global_name || member.user?.username || 'Instructor';
+            // Strictly grabs their Discord username (not server nickname or display name)
+            const discordUsername = member.user?.username || 'Instructor';
 
             statusText.style.display = 'none';
             protectedBox.style.display = 'block';
-            typeWelcomeMessage(`Welcome, ${matchedRank.name} ${displayName}`);
+            typeWelcomeMessage(`Welcome, ${matchedRank.name} ${discordUsername}`);
           } else {
             statusText.innerText = 'Access Denied: This training guide is restricted to Staff Instructors only.';
           }
         } else {
-          statusText.innerText = 'Access Denied: You must be in the Florida State RP Discord server.';
+          statusText.innerText = 'Access Denied: You must be in the Florida State Roleplay Discord server.';
         }
       }
     }
