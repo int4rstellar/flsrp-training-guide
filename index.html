@@ -555,306 +555,307 @@
     </div>
   </div>
 
-  <script type="module">
-    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
+<script type="module">
+  import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
 
-    // ==========================================
-    // 1. CONFIGURATION (EDIT THESE LISTS ANYTIME)
-    // ==========================================
-    const SUPABASE_URL = 'https://nyrfvlyapwazukltdlsf.supabase.co';
-    const SUPABASE_ANON_KEY = 'sb_publishable_cVOlR7exe7ZuoaLKr0aOKA_a6Vv1dU7';
-    const GUILD_ID = '1428115068297412742';
-    const WEBHOOK_URL = 'https://discord.com/api/webhooks/1572011826961457252/DiBuXlT3-CMoIP34Cy3mtpH3I5JownrR-VHszdMBqqhNHtMXslmwvpn63WjK6M_uXDCN';
+  // ==========================================
+  // 1. CONFIGURATION (EDIT THESE LISTS ANYTIME)
+  // ==========================================
+  const SUPABASE_URL = 'https://nyrfvlyapwazukltdlsf.supabase.co';
+  const SUPABASE_ANON_KEY = 'sb_publishable_cVOlR7exe7ZuoaLKr0aOKA_a6Vv1dU7';
+  const GUILD_ID = '1428115068297412742';
+  const WEBHOOK_URL = 'https://discord.com/api/webhooks/1572011826961457252/DiBuXlT3-CMoIP34Cy3mtpH3I5JownrR-VHszdMBqqhNHtMXslmwvpn63WjK6M_uXDCN';
 
-    // Add or edit your Training Types here:
-    const TRAINING_TYPES = [
-      'Entry Moderator Training',
-      'Support Training'
-    ];
+  // Add or edit your Training Types here:
+  const TRAINING_TYPES = [
+    'Entry Moderator Training',
+    'Support Training'
+  ];
 
-    // Ordered from highest rank to lowest rank:
-    const RANK_ROLES = [
-      { id: '1566965345904894042', name: 'Server Lead' },
-      { id: '1428115068494807345', name: 'Owner' },
-      { id: '1428115068494807344', name: 'Co Owner' },
-      { id: '1428115068494807343', name: 'Assistant Owner' },
-      { id: '1428115068477902969', name: 'Executive Director' },
-      { id: '1428115068477902968', name: 'Staff Executive' },
-      { id: '1428115068460994741', name: 'Community Executive' },
-      { id: '1428115068460994740', name: 'Trial Executive' }
-    ];
+  // Ordered from highest rank to lowest rank:
+  const RANK_ROLES = [
+    { id: '1566965345904894042', name: 'Server Lead' },
+    { id: '1428115068494807345', name: 'Owner' },
+    { id: '1428115068494807344', name: 'Co Owner' },
+    { id: '1428115068494807343', name: 'Assistant Owner' },
+    { id: '1428115068477902969', name: 'Executive Director' },
+    { id: '1428115068477902968', name: 'Staff Executive' },
+    { id: '1428115068460994741', name: 'Community Executive' },
+    { id: '1428115068460994740', name: 'Trial Executive' }
+  ];
 
-    // ==========================================
-    // 2. APP LOGIC
-    // ==========================================
-    const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  // ==========================================
+  // 2. APP LOGIC
+  // ==========================================
+  const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    // Elements
-    const statusText = document.getElementById('status');
-    const loginBtn = document.getElementById('login-btn');
-    const logoutBtn = document.getElementById('logout-btn');
-    const welcomeBanner = document.getElementById('welcome-banner');
-    const welcomeText = document.getElementById('welcome-text');
+  // Elements
+  const statusText = document.getElementById('status');
+  const loginBtn = document.getElementById('login-btn');
+  const logoutBtn = document.getElementById('logout-btn');
+  const welcomeBanner = document.getElementById('welcome-banner');
+  const welcomeText = document.getElementById('welcome-text');
 
-    const menuView = document.getElementById('menu-view');
-    const setupView = document.getElementById('setup-view');
-    const guideView = document.getElementById('guide-view');
+  const menuView = document.getElementById('menu-view');
+  const setupView = document.getElementById('setup-view');
+  const guideView = document.getElementById('guide-view');
 
-    const trainingSelect = document.getElementById('training-type-select');
-    const traineeInput = document.getElementById('trainee-input');
-    const addTraineeBtn = document.getElementById('add-trainee-btn');
-    const selectedPills = document.getElementById('selected-pills');
-    const traineeCountBadge = document.getElementById('trainee-count');
-    const setupError = document.getElementById('setup-error');
-    const confirmStartBtn = document.getElementById('confirm-start-btn');
-    const activeSessionInfo = document.getElementById('active-session-info');
+  const trainingSelect = document.getElementById('training-type-select');
+  const traineeInput = document.getElementById('trainee-input');
+  const addTraineeBtn = document.getElementById('add-trainee-btn');
+  const selectedPills = document.getElementById('selected-pills');
+  const traineeCountBadge = document.getElementById('trainee-count');
+  const setupError = document.getElementById('setup-error');
+  const confirmStartBtn = document.getElementById('confirm-start-btn');
+  const activeSessionInfo = document.getElementById('active-session-info');
 
-    // State
-    let currentInstructor = { username: 'Instructor', rank: 'Staff' };
-    let selectedTrainees = [];
-    const MAX_TRAINEES = 4;
+  // State
+  let currentInstructor = { username: 'Instructor', rank: 'Staff' };
+  let selectedTrainees = [];
+  const MAX_TRAINEES = 4;
 
-    // Populate Training Types Dropdown
-    TRAINING_TYPES.forEach((type) => {
-      const opt = document.createElement('option');
-      opt.value = type;
-      opt.textContent = type;
-      trainingSelect.appendChild(opt);
-    });
+  // Populate Training Types Dropdown
+  TRAINING_TYPES.forEach((type) => {
+    const opt = document.createElement('option');
+    opt.value = type;
+    opt.textContent = type;
+    trainingSelect.appendChild(opt);
+  });
 
-    // Helper: Switch visible screen
-    function showView(viewElement) {
-      menuView.style.display = 'none';
-      setupView.style.display = 'none';
-      guideView.style.display = 'none';
-      viewElement.style.display = 'block';
-    }
+  // Helper: Switch visible screen
+  function showView(viewElement) {
+    menuView.style.display = 'none';
+    setupView.style.display = 'none';
+    guideView.style.display = 'none';
+    viewElement.style.display = 'block';
+  }
 
-    // Typewriter welcome animation
-    function typeWelcomeMessage(fullMessage) {
-      welcomeBanner.style.display = 'block';
-      welcomeText.textContent = '';
-      let index = 0;
-      const timer = setInterval(() => {
-        welcomeText.textContent += fullMessage.charAt(index);
-        index++;
-        if (index >= fullMessage.length) clearInterval(timer);
-      }, 45);
-    }
+  // Typewriter welcome animation
+  function typeWelcomeMessage(fullMessage) {
+    welcomeBanner.style.display = 'block';
+    welcomeText.textContent = '';
+    let index = 0;
+    const timer = setInterval(() => {
+      welcomeText.textContent += fullMessage.charAt(index);
+      index++;
+      if (index >= fullMessage.length) clearInterval(timer);
+    }, 45);
+  }
 
-    // Render Selected Trainee Pills
-    function renderTraineePills() {
-      traineeCountBadge.textContent = `${selectedTrainees.length} / ${MAX_TRAINEES} Added`;
-      addTraineeBtn.disabled = selectedTrainees.length >= MAX_TRAINEES;
-      traineeInput.disabled = selectedTrainees.length >= MAX_TRAINEES;
-      traineeInput.placeholder =
-        selectedTrainees.length >= MAX_TRAINEES
-          ? 'Maximum of 4 trainees reached'
-          : 'Type Discord username and press Enter...';
+  // Render Selected Trainee Pills
+  function renderTraineePills() {
+    traineeCountBadge.textContent = `${selectedTrainees.length} / ${MAX_TRAINEES} Added`;
+    addTraineeBtn.disabled = selectedTrainees.length >= MAX_TRAINEES;
+    traineeInput.disabled = selectedTrainees.length >= MAX_TRAINEES;
+    traineeInput.placeholder =
+      selectedTrainees.length >= MAX_TRAINEES
+        ? 'Maximum of 4 trainees reached'
+        : 'Type Discord username and press Enter...';
 
-      selectedPills.innerHTML = '';
+    selectedPills.innerHTML = '';
 
-      selectedTrainees.forEach((name) => {
-        const pill = document.createElement('span');
-        pill.className = 'pill';
-        pill.innerHTML = `${name} <button type="button" title="Remove">&times;</button>`;
-        pill.querySelector('button').onclick = () => {
-          selectedTrainees = selectedTrainees.filter((t) => t !== name);
-          setupError.style.display = 'none';
-          renderTraineePills();
-        };
-        selectedPills.appendChild(pill);
-      });
-    }
-
-    // Add a typed trainee username
-    function handleAddTrainee() {
-      setupError.style.display = 'none';
-      const rawName = traineeInput.value.trim().replace(/^@/, '');
-
-      if (!rawName) return;
-
-      if (selectedTrainees.length >= MAX_TRAINEES) {
-        setupError.textContent = `You can only add up to ${MAX_TRAINEES} trainees per session.`;
-        setupError.style.display = 'block';
-        return;
-      }
-
-      if (selectedTrainees.some((t) => t.toLowerCase() === rawName.toLowerCase())) {
-        setupError.textContent = `"${rawName}" is already added to this session.`;
-        setupError.style.display = 'block';
-        return;
-      }
-
-      selectedTrainees.push(rawName);
-      traineeInput.value = '';
-      renderTraineePills();
-    }
-
-    addTraineeBtn.onclick = handleAddTrainee;
-
-    traineeInput.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') {
-        e.preventDefault();
-        handleAddTrainee();
-      }
-    });
-
-    // Navigation Button Listeners
-    document.getElementById('open-setup-btn').onclick = () => {
-      selectedTrainees = [];
-      traineeInput.value = '';
-      setupError.style.display = 'none';
-      renderTraineePills();
-      showView(setupView);
-    };
-
-    document.getElementById('cancel-setup-btn').onclick = () => {
-      showView(menuView);
-    };
-
-    document.getElementById('end-session-btn').onclick = () => {
-      document.querySelectorAll('#guide-view input[type="checkbox"]').forEach((cb) => (cb.checked = false));
-      showView(menuView);
-    };
-
-    // Start Session & Send Discord Webhook
-    confirmStartBtn.onclick = async () => {
-      // Auto-add whatever is currently typed in the box if they forgot to click "+ Add"
-      if (traineeInput.value.trim() && selectedTrainees.length < MAX_TRAINEES) {
-        handleAddTrainee();
-      }
-
-      if (selectedTrainees.length === 0) {
-        setupError.textContent = 'Please enter at least 1 trainee username before starting.';
-        setupError.style.display = 'block';
-        return;
-      }
-
-      const selectedType = trainingSelect.value;
-      confirmStartBtn.disabled = true;
-      confirmStartBtn.textContent = 'Starting & Logging Session...';
-      setupError.style.display = 'none';
-
-      const payload = {
-        username: 'FSRP Staff Training Logs',
-        avatar_url: 'https://i.postimg.cc/fLDqFCgj/933343108c74cc3d661798cd4ebca0d9.png',
-        embeds: [
-          {
-            title: '📋 New Staff Training Session Started',
-            color: 33535, // #0082ff
-            fields: [
-              {
-                name: 'Training Instructor',
-                value: `**${currentInstructor.rank}** — \`${currentInstructor.username}\``,
-                inline: true
-              },
-              {
-                name: 'Training Type',
-                value: selectedType,
-                inline: true
-              },
-              {
-                name: `Trainees (${selectedTrainees.length}/${MAX_TRAINEES})`,
-                value: selectedTrainees.map((t, i) => `${i + 1}. \`${t}\``).join('\n'),
-                inline: false
-              }
-            ],
-            footer: {
-              text: 'Florida State Roleplay • Staff Training Portal'
-            },
-            timestamp: new Date().toISOString()
-          }
-        ]
+    selectedTrainees.forEach((name) => {
+      const pill = document.createElement('span');
+      pill.className = 'pill';
+      pill.innerHTML = `${name} <button type="button" title="Remove">&times;</button>`;
+      pill.querySelector('button').onclick = () => {
+        selectedTrainees = selectedTrainees.filter((t) => t !== name);
+        setupError.style.display = 'none';
+        renderTraineePills();
       };
+      selectedPills.appendChild(pill);
+    });
+  }
 
-      try {
-        const webhookRes = await fetch(WEBHOOK_URL, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
-        });
+  // Add a typed trainee username
+  function handleAddTrainee() {
+    setupError.style.display = 'none';
+    const rawName = traineeInput.value.trim().replace(/^@/, '');
 
-        if (!webhookRes.ok) {
-          throw new Error(`Webhook returned status ${webhookRes.status}`);
+    if (!rawName) return;
+
+    if (selectedTrainees.length >= MAX_TRAINEES) {
+      setupError.textContent = `You can only add up to ${MAX_TRAINEES} trainees per session.`;
+      setupError.style.display = 'block';
+      return;
+    }
+
+    if (selectedTrainees.some((t) => t.toLowerCase() === rawName.toLowerCase())) {
+      setupError.textContent = `"${rawName}" is already added to this session.`;
+      setupError.style.display = 'block';
+      return;
+    }
+
+    selectedTrainees.push(rawName);
+    traineeInput.value = '';
+    renderTraineePills();
+  }
+
+  addTraineeBtn.onclick = handleAddTrainee;
+
+  traineeInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      handleAddTrainee();
+    }
+  });
+
+  // Navigation Button Listeners
+  document.getElementById('open-setup-btn').onclick = () => {
+    selectedTrainees = [];
+    traineeInput.value = '';
+    setupError.style.display = 'none';
+    renderTraineePills();
+    showView(setupView);
+  };
+
+  document.getElementById('cancel-setup-btn').onclick = () => {
+    showView(menuView);
+  };
+
+  document.getElementById('end-session-btn').onclick = () => {
+    document.querySelectorAll('#guide-view input[type="checkbox"]').forEach((cb) => (cb.checked = false));
+    showView(menuView);
+  };
+
+  // Start Session & Send Discord Webhook
+  confirmStartBtn.onclick = async () => {
+    // Auto-add whatever is currently typed in the box if they forgot to click "+ Add"
+    if (traineeInput.value.trim() && selectedTrainees.length < MAX_TRAINEES) {
+      handleAddTrainee();
+    }
+
+    if (selectedTrainees.length === 0) {
+      setupError.textContent = 'Please enter at least 1 trainee username before starting.';
+      setupError.style.display = 'block';
+      return;
+    }
+
+    const selectedType = trainingSelect.value;
+    confirmStartBtn.disabled = true;
+    confirmStartBtn.textContent = 'Starting & Logging Session...';
+    setupError.style.display = 'none';
+
+    const payload = {
+      username: 'FSRP Staff Training Logs',
+      avatar_url: 'https://i.postimg.cc/fLDqFCgj/933343108c74cc3d661798cd4ebca0d9.png',
+      embeds: [
+        {
+          title: '📋 New Staff Training Session Started',
+          color: 33535, // #0082ff
+          fields: [
+            {
+              name: 'Training Instructor',
+              value: `**${currentInstructor.rank}** — \`${currentInstructor.username}\``,
+              inline: true
+            },
+            {
+              name: 'Training Type',
+              value: selectedType,
+              inline: true
+            },
+            {
+              name: `Trainees (${selectedTrainees.length}/${MAX_TRAINEES})`,
+              value: selectedTrainees.map((t, i) => `${i + 1}. \`${t}\``).join('\n'),
+              inline: false
+            }
+          ],
+          footer: {
+            text: 'Florida State Roleplay • Staff Training Portal'
+          },
+          timestamp: new Date().toISOString()
         }
-
-        // Populate active session header and open the guide
-        activeSessionInfo.innerHTML = `
-          <div><strong>Training:</strong> ${selectedType}</div>
-          <div><strong>Instructor:</strong> ${currentInstructor.rank} ${currentInstructor.username}</div>
-          <div style="width:100%;"><strong>Trainees:</strong> ${selectedTrainees.join(', ')}</div>
-        `;
-
-        showView(guideView);
-      } catch (err) {
-        setupError.textContent = 'Failed to send session log to webhook. Please try again.';
-        setupError.style.display = 'block';
-      } finally {
-        confirmStartBtn.disabled = false;
-        confirmStartBtn.textContent = 'Start New Session';
-      }
+      ]
     };
 
-    // Auth Login & Logout
-    loginBtn.onclick = async () => {
-      await supabase.auth.signInWithOAuth({
-        provider: 'discord',
-        options: {
-          scopes: 'guilds.members.read',
-          redirectTo: window.location.origin + window.location.pathname
-        }
+    try {
+      const webhookRes = await fetch(WEBHOOK_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
       });
-    };
 
-    logoutBtn.onclick = async () => {
+      if (!webhookRes.ok) {
+        throw new Error(`Webhook returned status ${webhookRes.status}`);
+      }
+
+      // Populate active session header and open the guide
+      activeSessionInfo.innerHTML = `
+        <div><strong>Training:</strong> ${selectedType}</div>
+        <div><strong>Instructor:</strong> ${currentInstructor.rank} ${currentInstructor.username}</div>
+        <div style="width:100%;"><strong>Trainees:</strong> ${selectedTrainees.join(', ')}</div>
+      `;
+
+      showView(guideView);
+    } catch (err) {
+      console.error(err); // helpful for debugging in the browser console
+      setupError.textContent = 'Failed to send session log to webhook. Please try again.';
+      setupError.style.display = 'block';
+    } finally {
+      confirmStartBtn.disabled = false;
+      confirmStartBtn.textContent = 'Start New Session';
+    }
+  };
+
+  // Auth Login & Logout
+  loginBtn.onclick = async () => {
+    await supabase.auth.signInWithOAuth({
+      provider: 'discord',
+      options: {
+        scopes: 'guilds.members.read',
+        redirectTo: window.location.origin + window.location.pathname
+      }
+    });
+  };
+
+  logoutBtn.onclick = async () => {
+    await supabase.auth.signOut();
+    localStorage.clear();
+    window.location.href = window.location.origin + window.location.pathname;
+  };
+
+  // Verify Discord Session & Roles on Load
+  const { data: { session } } = await supabase.auth.getSession();
+
+  if (session) {
+    loginBtn.style.display = 'none';
+    logoutBtn.style.display = 'inline-block';
+
+    if (!session.provider_token) {
       await supabase.auth.signOut();
       localStorage.clear();
-      window.location.href = window.location.origin + window.location.pathname;
-    };
+      loginBtn.style.display = 'inline-block';
+      logoutBtn.style.display = 'none';
+      statusText.innerText = 'Your session expired. Please log in with Discord again.';
+    } else {
+      statusText.innerText = 'Verifying your Instructor credentials...';
 
-    // Verify Discord Session & Roles on Load
-    const { data: { session } } = await supabase.auth.getSession();
+      const res = await fetch(`https://discord.com/api/users/@me/guilds/${GUILD_ID}/member`, {
+        headers: { Authorization: `Bearer ${session.provider_token}` }
+      });
 
-    if (session) {
-      loginBtn.style.display = 'none';
-      logoutBtn.style.display = 'inline-block';
+      if (res.ok) {
+        const member = await res.json();
+        const matchedRank = RANK_ROLES.find((rank) => member.roles.includes(rank.id));
 
-      if (!session.provider_token) {
-        await supabase.auth.signOut();
-        localStorage.clear();
-        loginBtn.style.display = 'inline-block';
-        logoutBtn.style.display = 'none';
-        statusText.innerText = 'Your session expired. Please log in with Discord again.';
-      } else {
-        statusText.innerText = 'Verifying your Instructor credentials...';
+        if (matchedRank) {
+          const discordUsername = member.user?.username || 'Instructor';
+          currentInstructor = {
+            username: discordUsername,
+            rank: matchedRank.name
+          };
 
-        const res = await fetch(`https://discord.com/api/users/@me/guilds/${GUILD_ID}/member`, {
-          headers: { Authorization: `Bearer ${session.provider_token}` }
-        });
-
-        if (res.ok) {
-          const member = await res.json();
-          const matchedRank = RANK_ROLES.find((rank) => member.roles.includes(rank.id));
-
-          if (matchedRank) {
-            const discordUsername = member.user?.username || 'Instructor';
-            currentInstructor = {
-              username: discordUsername,
-              rank: matchedRank.name
-            };
-
-            statusText.style.display = 'none';
-            typeWelcomeMessage(`Welcome, ${matchedRank.name} ${discordUsername}`);
-            showView(menuView);
-          } else {
-            statusText.innerText = 'Access Denied: This training portal is restricted to Staff Instructors only.';
-          }
+          statusText.style.display = 'none';
+          typeWelcomeMessage(`Welcome, ${matchedRank.name} ${discordUsername}`);
+          showView(menuView);
         } else {
-          statusText.innerText = 'Access Denied: You must be in the Florida State Roleplay Discord server.';
+          statusText.innerText = 'Access Denied: This training portal is restricted to Staff Instructors only.';
         }
+      } else {
+        statusText.innerText = 'Access Denied: You must be in the Florida State Roleplay Discord server.';
       }
     }
-  </script>
+  }
+</script>
 </body>
 </html>
