@@ -5,11 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Florida State RP - Portal</title>
   <style>
-    body { font-family: sans-serif; background: #121212; color: white; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
-    .card { background: #1e1e1e; padding: 2rem; border-radius: 10px; text-align: center; max-width: 400px; }
-    button { background: #5865F2; color: white; border: none; padding: 12px 24px; border-radius: 6px; font-size: 16px; cursor: pointer; }
+    body { font-family: sans-serif; background: #121212; color: white; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 20px; box-sizing: border-box; }
+    .card { background: #1e1e1e; padding: 2rem; border-radius: 10px; text-align: center; max-width: 500px; width: 100%; }
+    button { background: #5865F2; color: white; border: none; padding: 12px 24px; border-radius: 6px; font-size: 16px; cursor: pointer; margin: 5px; }
     button:hover { background: #4752C4; }
-    #protected-content { display: none; margin-top: 20px; text-align: left; }
+    #logout-btn { background: #3a3a3a; display: none; font-size: 14px; padding: 8px 16px; }
+    #logout-btn:hover { background: #4f4f4f; }
+    #protected-content { display: none; margin-top: 20px; text-align: left; background: #262626; padding: 15px; border-radius: 8px; }
+    #debug-box { display: none; margin-top: 20px; text-align: left; background: #0d0d0d; border: 1px solid #333; padding: 12px; border-radius: 6px; font-family: monospace; font-size: 12px; color: #00ff88; white-space: pre-wrap; word-break: break-all; }
   </style>
 </head>
 <body>
@@ -17,19 +20,23 @@
     <h1>Florida State RP</h1>
     <p id="status">Please log in with Discord to verify your role.</p>
     <button id="login-btn">Login with Discord</button>
+    <button id="logout-btn">Reset / Log Out</button>
 
     <!-- Only people with the Discord role will see what is inside this box -->
     <div id="protected-content">
       <h2>Welcome, Member!</h2>
       <p>Put your private RP rules, server IP, or links right here.</p>
     </div>
+
+    <!-- Temporary Debug Box -->
+    <div id="debug-box"></div>
   </div>
 
   <script type="module">
     import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
 
-    // REPLACE THESE 4 VALUES WITH YOUR OWN:
-    const SUPABASE_URL = 'https://nyrfvlyapwazukltdlsf.supabase.co/';
+    // 1. REPLACE THESE 4 VALUES WITH YOUR OWN:
+    const SUPABASE_URL = 'https://nyrfvlyapwazukltdlsf.supabase.co';
     const SUPABASE_ANON_KEY = 'sb_publishable_cVOlR7exe7ZuoaLKr0aOKA_a6Vv1dU7';
     const GUILD_ID = '1428115068297412742';
     const ALLOWED_ROLE_ID = '1428115068389949549';
@@ -37,8 +44,16 @@
     const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
     const statusText = document.getElementById('status');
     const loginBtn = document.getElementById('login-btn');
+    const logoutBtn = document.getElementById('logout-btn');
     const protectedBox = document.getElementById('protected-content');
+    const debugBox = document.getElementById('debug-box');
 
+    function showDebug(text) {
+      debugBox.style.display = 'block';
+      debugBox.innerText = text;
+    }
+
+    // Login Button
     loginBtn.onclick = async () => {
       await supabase.auth.signInWithOAuth({
         provider: 'discord',
@@ -49,25 +64,49 @@
       });
     };
 
+    // Reset / Logout Button (clears old cached sessions)
+    logoutBtn.onclick = async () => {
+      await supabase.auth.signOut();
+      localStorage.clear();
+      window.location.href = window.location.origin + window.location.pathname;
+    };
+
+    // Check Session
     const { data: { session } } = await supabase.auth.getSession();
-    if (session?.provider_token) {
+
+    if (session) {
       loginBtn.style.display = 'none';
-      statusText.innerText = 'Checking your Discord roles...';
+      logoutBtn.style.display = 'inline-block';
 
-      const res = await fetch(`https://discord.com/api/users/@me/guilds/${GUILD_ID}/member`, {
-        headers: { Authorization: `Bearer ${session.provider_token}` }
-      });
-
-      if (res.ok) {
-        const member = await res.json();
-        if (member.roles.includes(ALLOWED_ROLE_ID)) {
-          statusText.innerText = 'Verified!';
-          protectedBox.style.display = 'block';
-        } else {
-          statusText.innerText = 'Access Denied: You do not have the required role.';
-        }
+      if (!session.provider_token) {
+        statusText.innerText = 'Session found, but Discord token expired or missing.';
+        showDebug('Click "Reset / Log Out" above and log in again to get a fresh Discord token.');
       } else {
-        statusText.innerText = 'Access Denied: You are not in the Discord server.';
+        statusText.innerText = 'Checking your Discord roles...';
+
+        const res = await fetch(`https://discord.com/api/users/@me/guilds/${GUILD_ID}/member`, {
+          headers: { Authorization: `Bearer ${session.provider_token}` }
+        });
+
+        const rawText = await res.text();
+
+        if (res.ok) {
+          const member = JSON.parse(rawText);
+          if (member.roles.includes(ALLOWED_ROLE_ID)) {
+            statusText.innerText = 'Verified!';
+            protectedBox.style.display = 'block';
+          } else {
+            statusText.innerText = 'Access Denied: Role ID did not match.';
+            showDebug(
+              `Logged in as: ${member.user?.username || 'Unknown'}\n` +
+              `Role ID your code is looking for: "${ALLOWED_ROLE_ID}"\n` +
+              `Role IDs Discord sees on your account:\n${JSON.stringify(member.roles, null, 2)}`
+            );
+          }
+        } else {
+          statusText.innerText = `Discord API Error (Status ${res.status})`;
+          showDebug(`Discord Response:\n${rawText}`);
+        }
       }
     }
   </script>
