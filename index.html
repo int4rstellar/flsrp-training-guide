@@ -628,7 +628,10 @@
   const SUPABASE_URL = 'https://nyrfvlyapwazukltdlsf.supabase.co';
   const SUPABASE_ANON_KEY = 'sb_publishable_cVOlR7exe7ZuoaLKr0aOKA_a6Vv1dU7';
   const GUILD_ID = '1428115068297412742';
-  const WEBHOOK_URL = 'https://discord.com/api/webhooks/1572011826961457252/DiBuXlT3-CMoIP34Cy3mtpH3I5JownrR-VHszdMBqqhNHtMXslmwvpn63WjK6M_uXDCN';
+
+  // IMPORTANT: your old webhook was posted publicly, so create a NEW one in Discord
+  // (Channel Settings > Integrations > Webhooks) and paste it here.
+  const WEBHOOK_URL = 'PASTE_YOUR_NEW_WEBHOOK_URL_HERE';
 
   // Add or edit your Training Types here:
   const TRAINING_TYPES = [
@@ -679,6 +682,16 @@
   let activeSessionType = '';
   const MAX_TRAINEES = 4;
 
+  // Escape user-typed text before putting it into innerHTML
+  function escapeHtml(str) {
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
   // Populate Training Types Dropdown
   TRAINING_TYPES.forEach((type) => {
     const opt = document.createElement('option');
@@ -722,7 +735,7 @@
     selectedTrainees.forEach((name) => {
       const pill = document.createElement('span');
       pill.className = 'pill';
-      pill.innerHTML = `${name} <button type="button" title="Remove">&times;</button>`;
+      pill.innerHTML = `${escapeHtml(name)} <button type="button" title="Remove">&times;</button>`;
       pill.querySelector('button').onclick = () => {
         selectedTrainees = selectedTrainees.filter((t) => t !== name);
         setupError.style.display = 'none';
@@ -794,12 +807,17 @@
     const completedCount = checklistItems.filter((i) => i.checked).length;
     const totalCount = checklistItems.length;
     const allComplete = completedCount === totalCount && totalCount > 0;
-    const checklistValue =
+
+    // Discord embed field values are capped at 1024 characters
+    let checklistValue =
       checklistItems.length === 0
         ? '_No checklist items_'
         : checklistItems
             .map((i) => `${i.checked ? '✅' : '❌'} ${i.text}`)
             .join('\n');
+    if (checklistValue.length > 1000) {
+      checklistValue = checklistValue.slice(0, 997) + '...';
+    }
 
     const payload = {
       username: 'FSRP Staff Training Logs',
@@ -938,9 +956,9 @@
 
       // Populate active session header and open the guide
       activeSessionInfo.innerHTML = `
-        <div><strong>Training:</strong> ${selectedType}</div>
-        <div><strong>Instructor:</strong> ${currentInstructor.rank} ${currentInstructor.username}</div>
-        <div style="width:100%;"><strong>Trainees:</strong> ${selectedTrainees.join(', ')}</div>
+        <div><strong>Training:</strong> ${escapeHtml(selectedType)}</div>
+        <div><strong>Instructor:</strong> ${escapeHtml(currentInstructor.rank)} ${escapeHtml(currentInstructor.username)}</div>
+        <div style="width:100%;"><strong>Trainees:</strong> ${selectedTrainees.map(escapeHtml).join(', ')}</div>
       `;
 
       showView(guideView);
@@ -956,13 +974,17 @@
 
   // Auth Login & Logout
   loginBtn.onclick = async () => {
-    await supabase.auth.signInWithOAuth({
+    const { error } = await supabase.auth.signInWithOAuth({
       provider: 'discord',
       options: {
         scopes: 'guilds.members.read',
         redirectTo: window.location.origin + window.location.pathname
       }
     });
+    if (error) {
+      console.error('OAuth start failed:', error);
+      statusText.innerText = 'Could not start Discord login. Check the browser console.';
+    }
   };
 
   logoutBtn.onclick = async () => {
@@ -973,6 +995,9 @@
 
   // Verify Discord Session & Roles on Load
   const { data: { session } } = await supabase.auth.getSession();
+
+  // DEBUG: remove once login works. Open the browser console (F12) to see this.
+  console.log('session:', session, 'url:', window.location.href);
 
   if (session) {
     loginBtn.style.display = 'none';
